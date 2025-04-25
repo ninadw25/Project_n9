@@ -66,3 +66,25 @@ class SummarizerService:
             "summary_id": summary_id,
             "username": username
         })
+    
+    async def save_summary(self, summary_id: str, username: str) -> bool:
+        try:
+            # First check if summary exists
+            summary = await self.db.summaries.find_one({
+                "summary_id": summary_id,
+                "username": username
+            })
+            
+            if not summary:
+                return False
+                
+            # Update the saved status
+            result = await self.db.summaries.update_one(
+                {"summary_id": summary_id, "username": username},
+                {"$set": {"saved": True}}
+            )
+            return result.modified_count > 0
+            
+        except Exception as e:
+            print(f"Error saving summary: {str(e)}")
+            return False

@@ -45,7 +45,12 @@
 
             <div class="input-area">
                 <label for="textInput">Text to Summarize:</label>
-                <textarea id="textInput" placeholder="Paste your text here..."></textarea>
+                <!-- <textarea id="textInput" placeholder="Paste your text here..."></textarea> -->
+                <textarea id="textInput" 
+                        class="text-input" 
+                        placeholder="Paste your text here...">
+                </textarea>
+
             </div>
 
             <button id="summarizeButton" class="primary-button">Generate Summary</button>
@@ -128,9 +133,32 @@
                 }
             });
             
-            saveButton.addEventListener('click', function() {
+            saveButton.addEventListener('click', async function() {
                 if (currentSummaryId) {
-                    window.location.href = `/summary/${currentSummaryId}`;
+                    try {
+                        statusDiv.textContent = 'Saving summary...';
+                        saveButton.disabled = true;
+                        
+                        const response = await fetch(`/api/save_summary/${currentSummaryId}`, {
+                            method: 'POST'
+                        });
+                        
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.status === 'success') {
+                                window.location.href = `/summary/${currentSummaryId}`;
+                            } else {
+                                statusDiv.textContent = 'Failed to save summary';
+                            }
+                        } else {
+                            const error = await response.json();
+                            statusDiv.textContent = `Error: ${error.detail || 'Failed to save summary'}`;
+                        }
+                    } catch (error) {
+                        statusDiv.textContent = `Error: ${error.message}`;
+                    } finally {
+                        saveButton.disabled = false;
+                    }
                 }
             });
         });

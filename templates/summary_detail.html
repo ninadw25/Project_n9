@@ -2,38 +2,82 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Summary Detail</title>
-    <link rel="stylesheet" href="/static/summarizer.css">
+    <link rel="stylesheet" href="../static/summarizer.css">
+    <!-- Add marked library for markdown rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="/static/js/summary_detail.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
             <h1>Summary Detail</h1>
             <div class="user-info">
                 <span>Welcome, {{ user }}</span>
-                <a href="/dashboard">Dashboard</a>
-                <a href="/summarize">New Summary</a>
-                <a href="/logout">Logout</a>
+                <a href="/dashboard" class="btn">Dashboard</a>
+                <a href="/summarize" class="btn">New Summary</a>
+                <a href="/logout" class="btn">Logout</a>
             </div>
         </div>
 
-        <div class="summary-detail">
-            <div class="meta-info">
-                <p><strong>Type:</strong> {{ summary.summary_type }}</p>
-                <p><strong>Created:</strong> {{ summary.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+        <div class="summary-container">
+            <div class="summary-header">
+                <h2>{{ summary.title }}</h2>
+                <p class="summary-meta">
+                    Type: <span class="badge">{{ summary.summary_type }}</span>
+                    Created: <span>{{ summary.created_at.strftime("%Y-%m-%d %H:%M") }}</span>
+                </p>
             </div>
             
-            <div class="summary-content" id="summaryContent">
-                {{ summary.summary }}
+            <div class="tabs">
+                <button class="tab-btn active" onclick="openTab(event, 'summary-tab')">Summary</button>
+                <button class="tab-btn" onclick="openTab(event, 'original-tab')">Original Text</button>
             </div>
             
-            <div class="original-text">
-                <h3>Original Text</h3>
-                <div class="text-preview">{{ summary.original_text }}</div>
+            <div id="summary-tab" class="tab-content" style="display: block;">
+                <div class="summary-content markdown-content"></div>
+            </div>
+            
+            <div id="original-tab" class="tab-content">
+                <div class="original-text">
+                    <pre>{{ summary.original_text }}</pre>
+                </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Render summary with markdown
+            const summaryContent = document.querySelector('.summary-content');
+            summaryContent.innerHTML = marked.parse(`{{ summary.summary | safe }}`);
+            
+            // Apply syntax highlighting
+            Prism.highlightAll();
+        });
+        
+        function openTab(evt, tabName) {
+            // Hide all tab content
+            const tabContent = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabContent.length; i++) {
+                tabContent[i].style.display = "none";
+            }
+            
+            // Remove "active" class from all tab buttons
+            const tabLinks = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tabLinks.length; i++) {
+                tabLinks[i].className = tabLinks[i].className.replace(" active", "");
+            }
+            
+            // Show the current tab and add "active" class to the button
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
 </body>
 </html>

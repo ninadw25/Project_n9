@@ -5,6 +5,7 @@ from fastapi.templating import Jinja2Templates
 import motor.motor_asyncio
 from uuid import uuid4
 import os
+from datetime import datetime
 
 # Import services and models
 from middleware.auth import AuthMiddleware
@@ -103,8 +104,15 @@ async def view_summary(
         {"request": request, "user": session["username"], "summary": summary}
     )
 
-@app.get("/logout")
-async def logout():
-    response = RedirectResponse(url="/login")
-    response.delete_cookie("session_id")
-    return response
+@app.post("/api/save_summary/{summary_id}")
+async def save_summary(
+    summary_id: str,
+    session: dict = Depends(auth.verify_session)
+):
+    try:
+        success = await summarizer_service.save_summary(summary_id, session["username"])
+        if not success:
+            raise HTTPException(status_code=404, detail="Summary not found or could not be saved")
+        return {"status": "success"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

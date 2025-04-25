@@ -1,82 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Summarify Dashboard</title>
-  <link rel="stylesheet" href="/static/dashboard.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Summarify Dashboard</title>
+    <link rel="stylesheet" href="/static/dashboard.css" />
 </head>
 <body>
-  <nav class="navbar">
-    <div class="nav-brand">Summarify</div>
-    <div class="nav-links">
-      <a href="#features">Features</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-      <a href="/logout" class="btn demo-btn">Logout</a>
-    </div>
-  </nav>
+    <nav class="navbar">
+        <div class="nav-brand">Summarify</div>
+        <div class="nav-links">
+            <span class="welcome-text">Welcome, {{ user }}</span>
+            <a href="#features">Features</a>
+            <a href="#history">History</a>
+            <a href="/logout" class="btn demo-btn">Logout</a>
+        </div>
+    </nav>
 
-  <header class="hero">
-    <h1>AI-Driven Text Summarizer</h1>
-    <p class="hero-subtitle">
-      Condense research papers, reports, transcripts, and more into clear, concise Markdown summaries—with just one click.
-    </p>
-    <div class="cta-buttons">
-      <a href="#features" class="btn primary">Explore Features</a>
-      <a href="/summarize/custom" class="btn secondary">Try Custom</a>
-    </div>
-  </header>
+    <header class="hero">
+        <h1>AI-Driven Text Summarizer</h1>
+        <p class="hero-subtitle">
+            Condense research papers, reports, transcripts, and more into clear, concise Markdown summaries—with just one click.
+        </p>
+        <div class="cta-buttons">
+            <a href="#features" class="btn primary">Explore Features</a>
+            <a href="/summarize/custom" class="btn secondary">Try Custom</a>
+        </div>
+    </header>
 
-  <section id="features" class="features">
-    <h2>Available Summarizers</h2>
-    <p class="section-subtitle">
-      Choose the summary type that fits your document.
-    </p>
+    <section id="features" class="features">
+        <h2>Available Summarizers</h2>
+        <p class="section-subtitle">Choose the summary type that fits your document.</p>
 
-    <div class="feature-grid">
-      <div class="feature-card">
-        <div class="feature-icon">📄</div>
-        <h3>Research Paper</h3>
-        <p>Overview, methodology, results, discussion, conclusion and references.</p>
-        <a href="/summarize?type=research" class="feature-link">Summarize →</a>
-      </div>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📄</div>
+                <h3>Research Paper</h3>
+                <p>Overview, methodology, results, discussion, conclusion and references.</p>
+                <a href="/summarize?type=research" class="feature-link">Summarize →</a>
+            </div>
 
-      <div class="feature-card">
-        <div class="feature-icon">💰</div>
-        <h3>Financial Report</h3>
-        <p>Executive summary, income & balance highlights, cash flows, KPIs and outlook.</p>
-        <a href="/summarize?type=financial" class="feature-link">Summarize →</a>
-      </div>
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3>Financial Report</h3>
+                <p>Executive summary, income & balance highlights, cash flows, KPIs and outlook.</p>
+                <a href="/summarize?type=financial" class="feature-link">Summarize →</a>
+            </div>
 
-      <div class="feature-card">
-        <div class="feature-icon">🛠️</div>
-        <h3>Technical Documentation</h3>
-        <p>System overview, APIs, data models, security, usage examples.</p>
-        <a href="/summarize?type=technical" class="feature-link">Summarize →</a>
-      </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛠️</div>
+                <h3>Technical Documentation</h3>
+                <p>System overview, APIs, data models, security, usage examples.</p>
+                <a href="/summarize?type=technical" class="feature-link">Summarize →</a>
+            </div>
 
-      <div class="feature-card">
-        <div class="feature-icon">📝</div>
-        <h3>Minutes of Meeting</h3>
-        <p>Key decisions, action items with owners & deadlines, and summary.</p>
-        <a href="/summarize?type=mom" class="feature-link">Generate MoM →</a>
-      </div>
+            <div class="feature-card">
+                <div class="feature-icon">📝</div>
+                <h3>Minutes of Meeting</h3>
+                <p>Key decisions, action items with owners & deadlines, and summary.</p>
+                <a href="/summarize?type=mom" class="feature-link">Generate MoM →</a>
+            </div>
 
-      <div class="feature-card">
-        <div class="feature-icon">📊</div>
-        <h3>Mermaid UML Diagram</h3>
-        <p>Convert your code or process description into a Mermaid flowchart.</p>
-        <a href="/summarize?type=mermaid" class="feature-link">Generate Diagram →</a>
-      </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Mermaid UML Diagram</h3>
+                <p>Convert your code or process description into a Mermaid flowchart.</p>
+                <a href="/summarize?type=mermaid" class="feature-link">Generate Diagram →</a>
+            </div>
 
-      <div class="feature-card">
-        <div class="feature-icon">✏️</div>
-        <h3>Custom Summary</h3>
-        <p>Define your own headings or style, and get a tailored Markdown output.</p>
-        <a href="/summarize/custom" class="feature-link">Customize →</a>
-      </div>
-    </div>
-  </section>
+            <div class="feature-card">
+                <div class="feature-icon">✏️</div>
+                <h3>Custom Summary</h3>
+                <p>Define your own headings or style, and get a tailored Markdown output.</p>
+                <a href="/summarize/custom" class="feature-link">Customize →</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="history" class="summary-history">
+        <h2>Your Summary History</h2>
+        {% if summaries %}
+            <div class="summary-list">
+                {% for summary in summaries %}
+                    <div class="summary-card">
+                        <h3>{{ summary.title }}</h3>
+                        <div class="summary-meta">
+                            <span class="badge">{{ summary.type }}</span>
+                            <span class="date">{{ summary.created_at }}</span>
+                        </div>
+                        <a href="/summary/{{ summary.id }}" class="btn view-btn">View Summary</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>You haven't created any summaries yet.</p>
+                <a href="/summarize" class="btn primary">Create Your First Summary</a>
+            </div>
+        {% endif %}
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2024 Summarify. All rights reserved.</p>
+    </footer>
 </body>
 </html>
