@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Summary Detail</title>
+    <link rel="stylesheet" href="/static/summarizer.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="/static/js/summary_detail.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Summary Detail</h1>
+            <div class="user-info">
+                <span>Welcome, {{ user }}</span>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/summarize">New Summary</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+
+        <div class="summary-detail">
+            <div class="meta-info">
+                <p><strong>Type:</strong> {{ summary.summary_type }}</p>
+                <p><strong>Created:</strong> {{ summary.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            </div>
+            
+            <div class="summary-content" id="summaryContent">
+                {{ summary.summary }}
+            </div>
+            
+            <div class="original-text">
+                <h3>Original Text</h3>
+                <div class="text-preview">{{ summary.original_text }}</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Summarizer</title>
+    <link rel="stylesheet" href="../static/summarizer.css">
+    <!-- Add marked library for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Text Summarizer</h1>
+            <p>Generate concise summaries from your text</p>
+            <div class="user-info">
+                <span>Welcome, {{ user }}</span>
+                <a href="/dashboard" class="btn">Dashboard</a>
+                <a href="/logout" class="btn">Logout</a>
+            </div>
+        </div>
+
+        <div class="setup-section">
+            <div class="input-group">
+                <label for="apiKey">Groq API Key:</label>
+                <input type="password" id="apiKey" placeholder="Enter your Groq API key">
+            </div>
+
+            <div class="input-group">
+                <label for="summaryType">Summary Type:</label>
+                <select id="summaryType">
+                    <option value="custom">General Summary</option>
+                    <option value="research">Research Paper</option>
+                    <option value="financial">Financial Report</option>
+                    <option value="technical">Technical Documentation</option>
+                    <option value="meeting">Meeting Minutes (MoM)</option>
+                    <option value="uml">UML Diagram</option>
+                </select>
+            </div>
+
+            <div class="input-area">
+                <label for="textInput">Text to Summarize:</label>
+                <textarea id="textInput" placeholder="Paste your text here..."></textarea>
+            </div>
+
+            <button id="summarizeButton" class="primary-button">Generate Summary</button>
+            <div id="status"></div>
+        </div>
+
+        <div class="summary-container">
+            <h2>Summary</h2>
+            <div class="summary-content" id="summaryContent"></div>
+            <button id="saveButton" class="secondary-button" style="display: none;">Save Summary</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiKeyInput = document.getElementById('apiKey');
+            const textInput = document.getElementById('textInput');
+            const summaryTypeSelect = document.getElementById('summaryType');
+            const summarizeButton = document.getElementById('summarizeButton');
+            const summaryContent = document.getElementById('summaryContent');
+            const statusDiv = document.getElementById('status');
+            const saveButton = document.getElementById('saveButton');
+            
+            let currentSummaryId = null;
+
+            summarizeButton.addEventListener('click', async function() {
+                // Validate inputs
+                const apiKey = apiKeyInput.value.trim();
+                const text = textInput.value.trim();
+                const summaryType = summaryTypeSelect.value;
+                
+                if (!apiKey) {
+                    statusDiv.textContent = 'Please enter your Groq API key';
+                    return;
+                }
+                
+                if (!text) {
+                    statusDiv.textContent = 'Please enter text to summarize';
+                    return;
+                }
+                
+                // Update UI
+                summarizeButton.disabled = true;
+                statusDiv.textContent = 'Generating summary...';
+                summaryContent.innerHTML = '';
+                saveButton.style.display = 'none';
+                
+                try {
+                    // Send request to backend
+                    const response = await fetch('/api/summarize', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            text: text,
+                            summary_type: summaryType,
+                            groq_api_key: apiKey
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        // Display summary with markdown rendering
+                        summaryContent.innerHTML = marked.parse(data.summary);
+                        statusDiv.textContent = 'Summary generated successfully';
+                        currentSummaryId = data.summary_id;
+                        saveButton.style.display = 'block';
+                        
+                        // Apply syntax highlighting
+                        Prism.highlightAll();
+                    } else {
+                        statusDiv.textContent = `Error: ${data.detail || 'Failed to generate summary'}`;
+                    }
+                } catch (error) {
+                    statusDiv.textContent = `Error: ${error.message}`;
+                } finally {
+                    summarizeButton.disabled = false;
+                }
+            });
+            
+            saveButton.addEventListener('click', function() {
+                if (currentSummaryId) {
+                    window.location.href = `/summary/${currentSummaryId}`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,3 +1,4 @@
+# main.py
 from fastapi import FastAPI, Request, Form, Depends, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -9,7 +10,7 @@ import os
 # Import services and models
 from middleware.auth import AuthMiddleware
 from models.schemas import TextInput, SummaryResponse
-from services.summarizer_service import SummarizerService
+from services.summarizer import SummarizerService
 
 app = FastAPI()
 
