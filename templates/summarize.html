@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Text Summarizer</title>
+    <link rel="stylesheet" href="../static/dashboard.css">
     <link rel="stylesheet" href="../static/summarizer.css">
     <!-- Add marked library for markdown rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -14,17 +15,24 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Text Summarizer</h1>
-            <p>Generate concise summaries from your text</p>
-            <div class="user-info">
-                <span>Welcome, {{ user }}</span>
-                <a href="/dashboard" class="btn">Dashboard</a>
-                <a href="/logout" class="btn">Logout</a>
-            </div>
-        </div>
+<!-- Replace the existing header section -->
+<nav class="navbar">
+    <div class="nav-brand">Summarify</div>
+    <div class="nav-links">
+        <span class="welcome-text">Welcome, {{ user }}</span>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout" class="btn demo-btn">Logout</a>
+    </div>
+</nav>
 
+<header class="hero">
+    <h1>Text Summarizer</h1>
+    <p class="hero-subtitle">
+        Generate concise summaries from your text using AI
+    </p>
+</header>
+
+    <div class="container">
         <div class="setup-section">
             <div class="input-group">
                 <label for="apiKey">Groq API Key:</label>
