@@ -12,6 +12,15 @@
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+    <style>
+        /* Add explicit styles for tab display */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
@@ -33,60 +42,72 @@
     </p>
 </header>
 
-    <div class="container">
-        <div class="summary-container">
-            <div class="summary-header">
-                <h2>{{ summary.title }}</h2>
-                <p class="summary-meta">
-                    Type: <span class="badge">{{ summary.summary_type }}</span>
-                    Created: <span>{{ summary.created_at.strftime("%Y-%m-%d %H:%M") }}</span>
-                </p>
+<div class="container">
+    <div class="summary-container">
+        <div class="summary-header">
+            <h2>Summary Details</h2>
+            <p class="summary-meta">
+                Type: <span class="badge">{{ summary.summary_type }}</span>
+                Created: <span>{{ summary.created_at }}</span>
+            </p>
+        </div>
+        <br>
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="summary-tab">Summary</button>
+            <button class="tab-btn" data-tab="original-tab">Original Text</button>
+        </div>
+        <br><br>
+        <div id="summary-tab" class="tab-content active">
+            <div class="summary-content markdown-content">
+                {{ summary.summary | safe }}
             </div>
-            
-            <div class="tabs">
-                <button class="tab-btn active" onclick="openTab(event, 'summary-tab')">Summary</button>
-                <button class="tab-btn" onclick="openTab(event, 'original-tab')">Original Text</button>
-            </div>
-            
-            <div id="summary-tab" class="tab-content" style="display: block;">
-                <div class="summary-content markdown-content"></div>
-            </div>
-            
-            <div id="original-tab" class="tab-content">
-                <div class="original-text">
-                    <pre>{{ summary.original_text }}</pre>
-                </div>
+        </div>
+        
+        <div id="original-tab" class="tab-content">
+            <div class="original-text">
+                <pre>{{ summary.original_text | safe }}</pre>
             </div>
         </div>
     </div>
+</div>
 
-    <script >
-        document.addEventListener('DOMContentLoaded', function() {
-            // Render summary with markdown
-            const summaryContent = document.querySelector('.summary-content');
-            summaryContent.innerHTML = marked.parse(`{{ summary.summary | safe }}`);
-            
-            // Apply syntax highlighting
-            Prism.highlightAll();
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the summary and original text from the server-rendered template
+        const summaryContent = document.querySelector('.summary-content');
+        const originalContent = document.querySelector('.original-text pre');
+        
+        // Initialize markdown rendering for summary
+        if (summaryContent.textContent.trim()) {
+            summaryContent.innerHTML = marked.parse(summaryContent.textContent);
+        }
+        
+        // Tab switching functionality
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // Update button states
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update content visibility
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+                
+                // Re-run syntax highlighting when switching tabs
+                if (tabId === 'summary-tab') {
+                    Prism.highlightAll();
+                }
+            });
         });
         
-        function openTab(evt, tabName) {
-            // Hide all tab content
-            const tabContent = document.getElementsByClassName("tab-content");
-            for (let i = 0; i < tabContent.length; i++) {
-                tabContent[i].style.display = "none";
-            }
-            
-            // Remove "active" class from all tab buttons
-            const tabLinks = document.getElementsByClassName("tab-btn");
-            for (let i = 0; i < tabLinks.length; i++) {
-                tabLinks[i].className = tabLinks[i].className.replace(" active", "");
-            }
-            
-            // Show the current tab and add "active" class to the button
-            document.getElementById(tabName).style.display = "block";
-            evt.currentTarget.className += " active";
-        }
-    </script>
+        // Show summary tab by default
+        document.querySelector('[data-tab="summary-tab"]').click();
+    });
+</script>
 </body>
 </html>
