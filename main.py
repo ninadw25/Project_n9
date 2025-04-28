@@ -10,7 +10,7 @@ from datetime import datetime
 # Import services and models
 from middleware.auth import AuthMiddleware
 from models.schemas import TextInput, SummaryResponse
-from services.summarizer_service import SummarizerService
+from services.summarizer import SummarizerService
 
 app = FastAPI()
 
@@ -38,7 +38,7 @@ async def post_login(request: Request, username: str = Form(...), password: str 
     if not user or password != user["password"]:
         return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
 
-    # Create session
+    # Creating a  session
     session_id = str(uuid4())
     await db.sessions.insert_one({"session_id": session_id, "username": username})
     response = RedirectResponse(url="/dashboard", status_code=302)
@@ -116,3 +116,15 @@ async def save_summary(
         return {"status": "success"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/logout")
+async def logout():
+    response = RedirectResponse(url="/login", status_code=302)
+    # Clear the session cookie
+    response.delete_cookie("session_id")
+    return response
+
+# Add this near the top with other route handlers
+@app.get("/")
+async def root():
+    return RedirectResponse(url="/login", status_code=302)

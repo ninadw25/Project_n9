@@ -250,19 +250,21 @@
     color: var(--text);
   }
   
-  .coming-soon-badge {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    background: rgba(30, 41, 59, 0.8);
-    color: var(--text-muted);
-    border-radius: 2rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-
-  .summary-history {
+  /* Summary History Section */
+.summary-history {
     padding: 4rem 2rem;
-    background: #f8f9fa;
+    background: var(--surface-gradient);
+}
+
+.summary-history h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    text-align: center;
+    margin-bottom: 1rem;
+    background: var(--text-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
 }
 
 .summary-list {
@@ -273,15 +275,23 @@
 }
 
 .summary-card {
-    background: white;
-    border-radius: 8px;
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
     padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-4px);
 }
 
 .summary-card h3 {
     margin: 0 0 1rem 0;
-    color: #2c3e50;
+    color: var(--text);
+    font-size: 1.25rem;
+    font-weight: 600;
 }
 
 .summary-meta {
@@ -292,39 +302,49 @@
 }
 
 .badge {
-    background: #e9ecef;
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary);
     padding: 0.25rem 0.75rem;
-    border-radius: 16px;
+    border-radius: 1rem;
     font-size: 0.875rem;
-    color: #495057;
+    font-weight: 500;
 }
 
 .date {
-    color: #6c757d;
+    color: var(--text-muted);
     font-size: 0.875rem;
 }
 
 .empty-state {
     text-align: center;
     padding: 3rem;
-    background: white;
-    border-radius: 8px;
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
     margin-top: 2rem;
 }
 
 .empty-state p {
-    color: #6c757d;
+    color: var(--text-muted);
     margin-bottom: 1.5rem;
-}
-
-.welcome-text {
-    color: white;
-    margin-right: 1rem;
 }
 
 .view-btn {
     width: 100%;
     text-align: center;
+    background: var(--primary-gradient);
+    color: var(--text);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.view-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
 }
   
   /* Responsive Design */

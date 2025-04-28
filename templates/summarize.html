@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Text Summarizer</title>
-    <link rel="stylesheet" href="../static/dashboard.css">
-    <link rel="stylesheet" href="../static/summarizer.css">
-    <!-- Add marked library for markdown rendering -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="static\summarizer.css">
+    <link rel="stylesheet" href="static\dashboard.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
@@ -15,32 +15,33 @@
 </head>
 
 <body>
-<!-- Replace the existing header section -->
-<nav class="navbar">
-    <div class="nav-brand">Summarify</div>
-    <div class="nav-links">
-        <span class="welcome-text">Welcome, {{ user }}</span>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/logout" class="btn demo-btn">Logout</a>
-    </div>
-</nav>
+    <nav class="navbar">
+        <div class="nav-brand">Summarify</div>
+        <div class="nav-links">
+            <span class="welcome-text">Welcome, {{ user }}</span>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/logout" class="btn demo-btn">Logout</a>
+        </div>
+    </nav>
 
-<header class="hero">
-    <h1>Text Summarizer</h1>
-    <p class="hero-subtitle">
-        Generate concise summaries from your text using AI
-    </p>
-</header>
+    <header class="hero">
+        <h1>Text Summarizer</h1>
+        <p class="hero-subtitle">
+            Generate concise, intelligent summaries from your text using AI
+        </p>
+    </header>
 
     <div class="container">
         <div class="setup-section">
             <div class="input-group">
                 <label for="apiKey">Groq API Key:</label>
+                <i class="fas fa-key icon"></i>
                 <input type="password" id="apiKey" placeholder="Enter your Groq API key">
             </div>
 
             <div class="input-group">
                 <label for="summaryType">Summary Type:</label>
+                <i class="fas fa-list icon"></i>
                 <select id="summaryType">
                     <option value="custom">General Summary</option>
                     <option value="research">Research Paper</option>
@@ -53,123 +54,33 @@
 
             <div class="input-area">
                 <label for="textInput">Text to Summarize:</label>
-                <!-- <textarea id="textInput" placeholder="Paste your text here..."></textarea> -->
-                <textarea id="textInput" 
+                <div class="input-group">
+                    <i class="fas fa-file-alt icon"></i>
+                    <textarea 
+                        id="textInput" 
                         class="text-input" 
-                        placeholder="Paste your text here...">
-                </textarea>
-
+                        placeholder="Paste your text here to generate a summary..."
+                    ></textarea>
+                </div>
             </div>
 
-            <button id="summarizeButton" class="primary-button">Generate Summary</button>
+            <button id="summarizeButton" class="primary-button">
+                <i class="fas fa-magic"></i> Generate Summary
+            </button>
             <div id="status"></div>
         </div>
 
         <div class="summary-container">
             <h2>Summary</h2>
-            <div class="summary-content" id="summaryContent"></div>
-            <button id="saveButton" class="secondary-button" style="display: none;">Save Summary</button>
+            <div class="summary-content" id="summaryContent">
+                <p class="placeholder-text">Your summary will appear here after generation</p>
+            </div>
+            <button id="saveButton" class="secondary-button" style="display: none;">
+                <i class="fas fa-save"></i> Save Summary
+            </button>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const apiKeyInput = document.getElementById('apiKey');
-            const textInput = document.getElementById('textInput');
-            const summaryTypeSelect = document.getElementById('summaryType');
-            const summarizeButton = document.getElementById('summarizeButton');
-            const summaryContent = document.getElementById('summaryContent');
-            const statusDiv = document.getElementById('status');
-            const saveButton = document.getElementById('saveButton');
-            
-            let currentSummaryId = null;
-
-            summarizeButton.addEventListener('click', async function() {
-                // Validate inputs
-                const apiKey = apiKeyInput.value.trim();
-                const text = textInput.value.trim();
-                const summaryType = summaryTypeSelect.value;
-                
-                if (!apiKey) {
-                    statusDiv.textContent = 'Please enter your Groq API key';
-                    return;
-                }
-                
-                if (!text) {
-                    statusDiv.textContent = 'Please enter text to summarize';
-                    return;
-                }
-                
-                // Update UI
-                summarizeButton.disabled = true;
-                statusDiv.textContent = 'Generating summary...';
-                summaryContent.innerHTML = '';
-                saveButton.style.display = 'none';
-                
-                try {
-                    // Send request to backend
-                    const response = await fetch('/api/summarize', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            text: text,
-                            summary_type: summaryType,
-                            groq_api_key: apiKey
-                        })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (response.ok) {
-                        // Display summary with markdown rendering
-                        summaryContent.innerHTML = marked.parse(data.summary);
-                        statusDiv.textContent = 'Summary generated successfully';
-                        currentSummaryId = data.summary_id;
-                        saveButton.style.display = 'block';
-                        
-                        // Apply syntax highlighting
-                        Prism.highlightAll();
-                    } else {
-                        statusDiv.textContent = `Error: ${data.detail || 'Failed to generate summary'}`;
-                    }
-                } catch (error) {
-                    statusDiv.textContent = `Error: ${error.message}`;
-                } finally {
-                    summarizeButton.disabled = false;
-                }
-            });
-            
-            saveButton.addEventListener('click', async function() {
-                if (currentSummaryId) {
-                    try {
-                        statusDiv.textContent = 'Saving summary...';
-                        saveButton.disabled = true;
-                        
-                        const response = await fetch(`/api/save_summary/${currentSummaryId}`, {
-                            method: 'POST'
-                        });
-                        
-                        if (response.ok) {
-                            const data = await response.json();
-                            if (data.status === 'success') {
-                                window.location.href = `/summary/${currentSummaryId}`;
-                            } else {
-                                statusDiv.textContent = 'Failed to save summary';
-                            }
-                        } else {
-                            const error = await response.json();
-                            statusDiv.textContent = `Error: ${error.detail || 'Failed to save summary'}`;
-                        }
-                    } catch (error) {
-                        statusDiv.textContent = `Error: ${error.message}`;
-                    } finally {
-                        saveButton.disabled = false;
-                    }
-                }
-            });
-        });
-    </script>
+    <script src="static\js\summarizer.js"></script>
 </body>
 </html>

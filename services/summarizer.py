@@ -1,50 +1,53 @@
 # services/summarizer_service.py
 from uuid import uuid4
-from datetime import datetime
+from datetime import datetime, timezone
 from langchain_groq import ChatGroq
 from langchain.chains import LLMChain
 from langchain_core.prompts import ChatPromptTemplate
+from .system_prompts import get_prompt_template
+from utils.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 class SummarizerService:
     def __init__(self, db):
         self.db = db
-        self.prompt_templates = {
-            "research": "You are a research assistant. Summarize the following research paper: {text}",
-            "financial": "You are a financial analyst. Summarize the following financial report: {text}",
-            "technical": "You are a technical writer. Summarize the following technical documentation: {text}",
-            "meeting": "You are a meeting assistant. Summarize the following meeting transcript: {text}",
-            "uml": "Create a mermaid UML diagram based on the following text: {text}",
-            "custom": "Provide a concise summary of the following text: {text}"
-        }
+        logger.info("Initializing SummarizerService")
+
     
     async def summarize_text(self, text, summary_type, api_key, username):
-        # Initialize LLM with user's API key
+        logger.info("Initializing SummarizerService")
         llm = ChatGroq(
             api_key=api_key,
-            model="llama-3.1-8b-instant",
+            model="llama-3.3-70b-versatile",  
             temperature=0
         )
         
         # Get prompt template
-        prompt_template = self.prompt_templates.get(summary_type, self.prompt_templates["custom"])
+        prompt_template = get_prompt_template(summary_type)
+        logger.debug(f"Using template for type: {summary_type}")
+
         
         # Create prompt and chain
         prompt = ChatPromptTemplate.from_template(prompt_template)
         chain = LLMChain(llm=llm, prompt=prompt)
         
         # Generate summary
-        result = await chain.ainvoke({"text": text})
+        logger.info("Generating summary")
+        result = await chain.ainvoke({"text": text})    # ainvoke is async invoke
         summary = result["text"]
         
         # Store in database
         summary_id = str(uuid4())
+        logger.info(f"Storing summary with ID: {summary_id}")
+
         await self.db.summaries.insert_one({
             "summary_id": summary_id,
             "username": username,
             "summary_type": summary_type,
-            "original_text": text[:1000],  # Store first 1000 chars
+            "original_text": text,  # Store all the data in original_text in mongo
             "summary": summary,
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)  
         })
         
         return summary, summary_id
@@ -56,7 +59,7 @@ class SummarizerService:
             summaries.append({
                 "id": summary["summary_id"],
                 "type": summary["summary_type"],
-                "title": summary.get("title", "Untitled Summary"),
+                # "title": summary.get("title", "Untitled Summary"),
                 "created_at": summary["created_at"].strftime("%Y-%m-%d %H:%M")
             })
         return summaries
