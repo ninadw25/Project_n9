@@ -5,10 +5,14 @@ from typing import Optional, Dict
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 import os
 
+# Load environment variables from .env file
+load_dotenv()
+
 # Configure JWT settings
-JWT_SECRET = os.getenv("JWT_SECRET", "your-secret-key-here")  # In production, use env var
+JWT_SECRET = os.getenv("JWT_SECRET")
 JWT_ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
