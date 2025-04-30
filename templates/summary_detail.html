@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Summary Detail</title>
-    <link rel="stylesheet" href="../static/dashboard.css">
-    <link rel="stylesheet" href="../static/summarizer.css">
+    <link rel="stylesheet" href="../static/css/dashboard.css">
+    <link rel="stylesheet" href="../static/css/summarizer.css">
     <!-- Add marked library for markdown rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
@@ -19,6 +19,32 @@
         }
         .tab-content.active {
             display: block;
+        }
+        
+        /* Add these new styles */
+        .original-text {
+            max-width: 100%;
+            overflow-x: auto;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .original-text pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+            padding: 15px;
+            max-width: 100%;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .markdown-content {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: #333;
         }
     </style>
     <script src="/static/js/summary_detail.js"></script>
@@ -46,9 +72,10 @@
     <div class="summary-container">
         <div class="summary-header">
             <h2>Summary Details</h2>
+            <br>
             <p class="summary-meta">
                 Type: <span class="badge">{{ summary.summary_type }}</span>
-                Created: <span>{{ summary.created_at }}</span>
+                Created: <span>{{ summary.created_at.strftime('%Y-%m-%d') if summary.created_at else summary.created_at }}</span>
             </p>
         </div>
         <br>

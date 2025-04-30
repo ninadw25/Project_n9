@@ -3,9 +3,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const summaryContent = document.querySelector('.summary-content');
     const originalContent = document.querySelector('.original-text pre');
     
-    // Initialize markdown rendering for summary
+    // Initialize markdown rendering for both summary and original text
     if (summaryContent.textContent.trim()) {
         summaryContent.innerHTML = marked.parse(summaryContent.textContent);
+    }
+    
+    // Convert original text to markdown
+    if (originalContent.textContent.trim()) {
+        originalContent.innerHTML = marked.parse(originalContent.textContent);
     }
     
     // Tab switching functionality

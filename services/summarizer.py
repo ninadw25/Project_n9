@@ -2,8 +2,8 @@
 from uuid import uuid4
 from datetime import datetime, timezone
 from langchain_groq import ChatGroq
-from langchain.chains import LLMChain
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 from .system_prompts import get_prompt_template
 from utils.logger import setup_logger
 
@@ -13,7 +13,6 @@ class SummarizerService:
     def __init__(self, db):
         self.db = db
         logger.info("Initializing SummarizerService")
-
     
     async def summarize_text(self, text, summary_type, api_key, username):
         logger.info("Initializing SummarizerService")
@@ -27,15 +26,13 @@ class SummarizerService:
         prompt_template = get_prompt_template(summary_type)
         logger.debug(f"Using template for type: {summary_type}")
 
-        
-        # Create prompt and chain
+        # Create prompt and chain using new RunnableSequence approach
         prompt = ChatPromptTemplate.from_template(prompt_template)
-        chain = LLMChain(llm=llm, prompt=prompt)
+        chain = prompt | llm | StrOutputParser()
         
         # Generate summary
         logger.info("Generating summary")
-        result = await chain.ainvoke({"text": text})    # ainvoke is async invoke
-        summary = result["text"]
+        summary = await chain.ainvoke({"text": text})
         
         # Store in database
         summary_id = str(uuid4())
@@ -45,7 +42,7 @@ class SummarizerService:
             "summary_id": summary_id,
             "username": username,
             "summary_type": summary_type,
-            "original_text": text,  # Store all the data in original_text in mongo
+            "original_text": text,
             "summary": summary,
             "created_at": datetime.now(timezone.utc)  
         })
