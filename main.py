@@ -26,10 +26,9 @@ MONGO_URL = os.getenv("MONGO_URL")
 client = motor.motor_asyncio.AsyncIOMotorClient(
     MONGO_URL,
     serverSelectionTimeoutMS=5000,
-    ssl=True,
-    ssl_cert_reqs=False  # For development only
+    tls=True,
+    tlsAllowInvalidCertificates=True
 )
-db = client.mydb
 
 db = client.mydb
 
