@@ -6,7 +6,7 @@ import motor.motor_asyncio
 from uuid import uuid4
 import os
 from datetime import datetime, timedelta
-
+import ssl
 # Import services and models
 from middleware.auth import AuthMiddleware
 from models.schemas import TextInput, SummaryResponse
