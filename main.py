@@ -20,7 +20,13 @@ templates = Jinja2Templates(directory="templates")
 
 # MongoDB setup
 MONGO_URL = os.getenv("MONGO_URL")
-client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
+# client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
+client = motor.motor_asyncio.AsyncIOMotorClient(
+    MONGO_URL,
+    tlsInsecure=True,  # For testing only, remove in production
+    ssl=True,
+    ssl_cert_reqs=ssl.CERT_NONE  # Less strict certificate validation
+)
 db = client.mydb
 
 # Initialize services
