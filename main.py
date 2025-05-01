@@ -6,7 +6,7 @@ import motor.motor_asyncio
 from uuid import uuid4
 import os
 from datetime import datetime, timedelta
-import ssl
+
 # Import services and models
 from middleware.auth import AuthMiddleware
 from models.schemas import TextInput, SummaryResponse
@@ -20,21 +20,7 @@ templates = Jinja2Templates(directory="templates")
 
 # MongoDB setup
 MONGO_URL = os.getenv("MONGO_URL")
-# client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
-# client = motor.motor_asyncio.AsyncIOMotorClient(
-#     MONGO_URL,
-#     tlsInsecure=True,  # For testing only, remove in production
-#     ssl=True,
-#     ssl_cert_reqs=ssl.CERT_NONE  # Less strict certificate validation
-# )
-client = motor.motor_asyncio.AsyncIOMotorClient(
-    MONGO_URL,
-    tlsInsecure=True,  # For testing only
-    tls=True,          # Use TLS instead of SSL
-    tlsAllowInvalidCertificates=True  # Similar to CERT_NONE in older versions
-)
-
-
+client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
 db = client.mydb
 
 # Initialize services
