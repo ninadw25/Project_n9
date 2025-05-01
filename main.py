@@ -18,10 +18,33 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+# # OLD MongoDB setup
+# MONGO_URL = os.getenv("MONGO_URL")
+# client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
+# db = client.mydb
+
+
+# Update this section in your main.py file:
+import ssl
+
 # MongoDB setup
 MONGO_URL = os.getenv("MONGO_URL")
-client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
+# Add TLS parameters if not already present
+if "?" in MONGO_URL:
+    if "&tls=true" not in MONGO_URL:
+        MONGO_URL += "&tls=true&tlsAllowInvalidCertificates=false"
+else:
+    MONGO_URL += "?tls=true&tlsAllowInvalidCertificates=false"
+
+# Update client initialization with explicit SSL configuration
+client = motor.motor_asyncio.AsyncIOMotorClient(
+    MONGO_URL,
+    ssl=True,
+    ssl_cert_reqs=ssl.CERT_REQUIRED,
+    tls=True
+)
 db = client.mydb
+
 
 # Initialize services
 auth = AuthMiddleware(db)
