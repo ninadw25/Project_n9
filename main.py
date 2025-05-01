@@ -23,28 +23,23 @@ templates = Jinja2Templates(directory="templates")
 # client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
 # db = client.mydb
 
-
-# Update this section in your main.py file:
-import ssl
-
 # MongoDB setup
 MONGO_URL = os.getenv("MONGO_URL")
-# Add TLS parameters if not already present
-if "?" in MONGO_URL:
-    if "&tls=true" not in MONGO_URL:
-        MONGO_URL += "&tls=true&tlsAllowInvalidCertificates=false"
-else:
-    MONGO_URL += "?tls=true&tlsAllowInvalidCertificates=false"
 
-# Update client initialization with explicit SSL configuration
-client = motor.motor_asyncio.AsyncIOMotorClient(
-    MONGO_URL,
-    ssl=True,
-    ssl_cert_reqs=ssl.CERT_REQUIRED,
-    tls=True
-)
+# Create MongoDB connection with proper TLS configuration
+# The "tlsCAFile=certifi.where()" is key for EC2 instances
+try:
+    import certifi
+    client = motor.motor_asyncio.AsyncIOMotorClient(
+        MONGO_URL,
+        tlsCAFile=certifi.where(),  # Use certifi's CA bundle
+        serverSelectionTimeoutMS=5000  # Reduce timeout for faster error feedback
+    )
+except ImportError:
+    # If certifi is not installed, try direct connection
+    client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
+
 db = client.mydb
-
 
 # Initialize services
 auth = AuthMiddleware(db)
