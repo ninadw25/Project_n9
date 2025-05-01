@@ -6,7 +6,6 @@ import motor.motor_asyncio
 from uuid import uuid4
 import os
 from datetime import datetime, timedelta
-import certifi
 
 # Import services and models
 from middleware.auth import AuthMiddleware
@@ -20,18 +19,8 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 # MongoDB setup
-# MONGO_URL = os.getenv("MONGO_URL")
-# client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
-# MongoDB setup
-# MongoDB setup
 MONGO_URL = os.getenv("MONGO_URL")
-client = motor.motor_asyncio.AsyncIOMotorClient(
-    MONGO_URL,
-    serverSelectionTimeoutMS=30000,
-    tls=True,
-    tlsAllowInvalidCertificates=True,
-    tlsCAFile=certifi.where()
-)
+client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
 db = client.mydb
 
 # Initialize services
