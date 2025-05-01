@@ -19,8 +19,18 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 # MongoDB setup
+# MONGO_URL = os.getenv("MONGO_URL")
+# client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
+# MongoDB setup
 MONGO_URL = os.getenv("MONGO_URL")
-client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
+client = motor.motor_asyncio.AsyncIOMotorClient(
+    MONGO_URL,
+    serverSelectionTimeoutMS=5000,
+    ssl=True,
+    ssl_cert_reqs=False  # For development only
+)
+db = client.mydb
+
 db = client.mydb
 
 # Initialize services
