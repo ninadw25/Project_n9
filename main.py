@@ -2,10 +2,13 @@ from fastapi import FastAPI, Request, Form, Depends, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-import motor.motor_asyncio
+# import motor.motor_asyncio
+from motor.motor_asyncio import AsyncIOMotorClient
+
 from uuid import uuid4
 import os
 from datetime import datetime, timedelta
+import ssl
 
 # Import services and models
 from middleware.auth import AuthMiddleware
@@ -20,7 +23,11 @@ templates = Jinja2Templates(directory="templates")
 
 # MongoDB setup
 MONGO_URL = os.getenv("MONGO_URL")
-client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
+client = AsyncIOMotorClient(
+    os.getenv('MONGO_URL'),
+    ssl_cert_reqs=ssl.CERT_NONE
+)
+# client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
 db = client.mydb
 
 # Initialize services
