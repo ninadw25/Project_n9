@@ -1,14 +1,14 @@
-**Project Documentation: AI Document Summarizer (Project_n9)**
+**Project Documentation: AI Document Summarizer Summarify (Project_n9)**
 
 **1. Introduction**
 
-This document provides a comprehensive overview of the AI Document Summarizer application, codenamed "Project_n9". Developed as a full-stack web application, Project_n9 allows users to generate concise summaries of large text inputs using advanced AI models. It supports various summarization types tailored for different document formats like research papers, financial reports, technical documentation, and more. The platform includes user authentication, enabling users to save and revisit their generated summaries.
+This document provides a comprehensive overview of the AI Document Summarizer application, codenamed "Project_n9". Developed as a full-stack web application, Summarify allows users to generate concise summaries of large text inputs using advanced AI models. It supports various summarization types tailored for different document formats like research papers, financial reports, technical documentation, and more. The platform includes user authentication, enabling users to save and revisit their generated summaries.
 
 This project addresses the core requirements of the assignment by providing a functional web interface, a robust backend API, secure user authentication, integration with a NoSQL database, and utilization of a Large Language Model (LLM) for the summarization task.
 
 **2. Features**
 
-Project_n9 implements the following key features:
+Summarify implements the following key features:
 
 *   **User Authentication:** Secure signup and login process to manage user accounts.
 *   **Text Summarization:** Allows users to input text and select a specific summarization type.
