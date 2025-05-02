@@ -105,7 +105,15 @@ async def dashboard(request: Request, session: dict = Depends(auth.verify_sessio
 
 @app.get("/summarize")
 async def get_summarize_page(request: Request, session: dict = Depends(auth.verify_session)):
-    return templates.TemplateResponse("summarize.html", {"request": request, "user": session["username"]})
+    groq_api_key = os.getenv("GROQ_API_KEY", "")  # Get API key from environment variables
+    return templates.TemplateResponse(
+        "summarize.html", 
+        {
+            "request": request, 
+            "user": session["username"],
+            "groq_api_key": groq_api_key
+        }
+    )
 
 @app.post("/api/summarize")
 async def summarize_text(

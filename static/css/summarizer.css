@@ -83,6 +83,41 @@ textarea::placeholder {
     resize: vertical;
 }
 
+.input-help {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.api-key-help {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.25rem;
+}
+
+.groq-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--primary);
+    transition: all 0.2s ease;
+}
+
+.groq-link:hover {
+    background: rgba(59, 130, 246, 0.2);
+    transform: translateY(-1px);
+}
+
+.groq-link i {
+    font-size: 0.75rem;
+}
+
 /* ————————————————————————————
    BUTTONS
    ———————————————————————————— */

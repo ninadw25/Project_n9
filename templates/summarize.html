@@ -35,8 +35,17 @@
         <div class="setup-section">
             <div class="input-group">
                 <label for="apiKey">Groq API Key:</label>
-                
-                <input type="password" id="apiKey" placeholder="Enter your Groq API key">
+                <input type="password" 
+                       id="apiKey" 
+                       placeholder="Enter your Groq API key" 
+                       value="{{ groq_api_key }}"
+                >
+                <div class="api-key-help">
+                    <small class="input-help">Default API key is provided, but you can use your own</small>
+                    <a href="https://console.groq.com/keys" target="_blank" class="groq-link">
+                        <i class="fas fa-external-link-alt"></i> Get Your Groq API Key
+                    </a>
+                </div>
             </div>
 
             <div class="input-group">
